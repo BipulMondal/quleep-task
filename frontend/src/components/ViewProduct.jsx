@@ -3,11 +3,9 @@ import React, { useEffect, useState } from "react";
 
 const ViewProduct = () => {
   const [products, setProducts] = useState([]);
-  // const API = "http://localhost:5000/getproducts";
 
   useEffect(() => {
     axios
-      // .get("http://localhost:5000/getproducts")
       .get("https://quleep-w47i.onrender.com/getproducts")
       .then((res) => setProducts(res.data))
       .catch((err) => console.log(err));
@@ -33,16 +31,6 @@ const ViewProduct = () => {
               />
             </p>
               <h2><span>Name : </span>{product.name}</h2>
-            
-            {/* <div>
-        {product.images.map((image, index) => {
-          return (
-            <div key={index}>
-              <img src={image} alt={product._id}/>
-            </div>
-          );
-        })}
-      </div> */}
           </div>
         );
       })}

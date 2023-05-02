@@ -1,57 +1,27 @@
 const Product = require("../models/productModel");
-const multer = require("multer");
-
-const FILE_TYPE_MAP = {
-  "image/png": "png",
-  "image/jpeg": "jpeg",
-  "image/jpg": "jpg",
-};
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const isValid = FILE_TYPE_MAP[file.mimetype];
-    let uploadError = new Error("Invalid image type");
-
-    if (isValid) {
-      uploadError = null;
-    }
-
-    cb(uploadError, "public/uploads");
-  },
-  filename: function (req, file, cb) {
-    const fileName = file.originalname.split(" ").join("-");
-    const extention = FILE_TYPE_MAP[file.mimetype];
-
-    cb(null, `${fileName}-${Date.now()}.${extention}`);
-  },
-});
-
-const upload = multer({ storage: storage });
+const {clouduploads} = require ("../cloudinary");
+const upload = require("../multer");
 
 exports.home = (req, res) => {
   res.send("Welcome to dashboard");
 };
 
-exports.createProduct = async (req, res) => {
+exports.createproduct = async (req, res) => {
   upload.array("images", 6)(req, res, async (err) => {
+try {
+    
     const files = req.files;
+    // console.log(req.files);
 
     if(!files || files.length === 0) {
-        return res.status(400).send("no image in the request")
-        //  console.log("no image in the request")
+      res.status(400).json("no image in the request")
     }
 
-    const images = [];
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-    for(let i = 0; i <files.length; i++){
-        const fileName = files[i].filename;
-        images.push(`${basePath}${fileName}`)
-    }
-
+    const images = await clouduploads(files, "Images");
 
     const {name, description, price, currency, color} = req.body;
 
-    if(!name || !description || !price || !currency || !color){
+    if(!name || !description || !price || !currency || !color || !files ){
         console.log("All fields are required")
     }
     else{
@@ -73,11 +43,15 @@ exports.createProduct = async (req, res) => {
       message: "product created successfully",
       product,
     });
+  }
+  }catch (error) {
+  console.log(error.message)
 }
-  });
+  })
+
 };
 
-exports.getProduct = async (req, res) => {
+exports.getproduct = async (req, res) => {
   const product = await Product.findById("req.params.id");
 
   if (!product) {
@@ -93,15 +67,43 @@ exports.getProduct = async (req, res) => {
   });
 };
 
-exports.getProducts = async (req, res) => {
-  const product = await Product.find();
+exports.getproducts = async (req, res) => {
+  try {
+    const products = await Product.find();
 
-  if (!product) {
+  if (!products) {
     res.status(500).json({
       success: false,
       message: "Can not find product",
     });
   }
 
-  res.status(201).send(product);
+  const allproducts = products.map(product => {
+    const images = product.images.map(image => {
+      return {
+        url: image.url,
+        id: image.id
+      }
+    })
+    return {
+      _id: product._id,
+      name: product.name,
+      description: product.description,
+      color: product.color,
+      price: product.price,
+      currency: product.currency,
+      images: images
+    }
+  })
+
+  res.status(201).json(
+    allproducts
+  );
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+
+
 };

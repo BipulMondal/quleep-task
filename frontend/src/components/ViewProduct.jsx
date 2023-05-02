@@ -6,7 +6,8 @@ const ViewProduct = () => {
 
   useEffect(() => {
     axios
-      .get("https://quleep-w47i.onrender.com/getproducts")
+      // .get("https://quleep-w47i.onrender.com/getproducts")
+      .get("http://localhost:5000/getproducts")
       .then((res) => setProducts(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -16,21 +17,32 @@ const ViewProduct = () => {
   }
 
   return (
-    <div className="grid grid-cols-7 gap-4 mt-[2rem]">
+    <div className="grid grid-cols-6 gap-4 mt-[2rem]">
       {products.map((product) => {
         return (
-          <div 
-          key={product._id}
-          className="bg-gray-100 flex flex-col items-center"
+          <div
+            key={product._id}
+            className="bg-gray-100 flex flex-col items-center"
           >
-            <p>
-              <img 
-              className="h-[9rem]"
-              src={product.images[0]} 
-              alt="product_image"
-              />
+            <p >
+              {product.images.length > 0 && product.images[0].url && (
+                <img
+                  className="h-[14rem] w-[11rem]"
+                 key={product.images.id}
+                  src={product.images[0].url} 
+                  alt="product" />
+              )}
+              {/* to show all images  */}
+              {/* {product.images.map(image => {
+                return (
+                  <img src={image.url} alt="product" /> 
+                )
+              })} */}
             </p>
-              <h2><span>Name : </span>{product.name}</h2>
+            <h2>
+              {/* <span>Name : </span> */}
+              {product.name}
+            </h2>
           </div>
         );
       })}

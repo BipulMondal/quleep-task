@@ -20,8 +20,14 @@ const productSchema = mongoose.Schema({
         type: String
     },
     images: [{
-        type: String,
-        data: Buffer
+        url: {
+            type: String,
+        required: true
+        },
+        id: {
+            type: String,
+        required: true
+        }
     }]
 })
 

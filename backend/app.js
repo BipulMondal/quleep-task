@@ -4,13 +4,21 @@ const app = express();
 const connectToDB = require ("./config/db");
 const cors = require ("cors")
 const productsRoutes = require ("./routes/productRoutes");
-
-app.use(cors());
-app.options("*", cors());
+// const fileUpload = require ('express-fileupload');
+const bodyParser = require("body-parser");
 
 //middleware
+app.use(cors());
+app.options("*", cors());
 app.use(express.json());
-app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
+
+
+//for cloudinary image send
+// app.use(fileUpload({
+//     useTempFiles: true
+// }))
 
 connectToDB();
 

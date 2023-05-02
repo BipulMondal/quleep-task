@@ -14,6 +14,7 @@ const AddProduct = () => {
     images: []
   });
 
+  const [submit, setSubmmit] = useState(false);
   const [dataSend, setDataSend] = useState(false)
 
   const handleFileSelect = (event) => {
@@ -32,11 +33,8 @@ const AddProduct = () => {
     }
   };
 
-  const [submit, setSubmmit] = useState(false);
   
   const submitData = async () => {
-
-    setDataSend(true);
 
     const data = new FormData();
     data.append("name", formData.name);
@@ -66,6 +64,7 @@ const AddProduct = () => {
         formData.price.length > 0 &&
         formData.currency.length > 0 &&
         formData.images.length > 0){
+        setDataSend(true);
         try {
           const res = await axios.post("http://localhost:5000/createproduct", data);
           console.log(res);

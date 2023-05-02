@@ -15,11 +15,6 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 
-//for cloudinary image send
-// app.use(fileUpload({
-//     useTempFiles: true
-// }))
-
 connectToDB();
 
 app.use("/", productsRoutes);

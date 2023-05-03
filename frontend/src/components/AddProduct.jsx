@@ -66,7 +66,7 @@ const AddProduct = () => {
         formData.images.length > 0){
         setDataSend(true);
         try {
-          const res = await axios.post("http://quleep-0ky9.onrender.com/createproduct", data);
+          const res = await axios.post("https://quleep-0ky9.onrender.com/createproduct", data);
           console.log(res);
           toast.success("Product Created Successfylly", {
             position: "top-right",

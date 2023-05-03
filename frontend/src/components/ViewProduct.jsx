@@ -6,8 +6,7 @@ const ViewProduct = () => {
 
   useEffect(() => {
     axios
-      // .get("https://quleep-w47i.onrender.com/getproducts")
-      .get("http://localhost:5000/getproducts")
+      .get("https://quleep-hqb3.onrender.com")
       .then((res) => setProducts(res.data))
       .catch((err) => console.log(err));
   }, []);

@@ -1,6 +1,6 @@
 const multer = require ("multer");
 
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage({
     // destination: function(req, file, cb) {
     //     cb(null,"./uploads")
     // },
@@ -23,8 +23,7 @@ const fileFilter = (req, file, cb) => {
 
 
 const upload = multer({
-    // storage: storage,
-    storage: multer.memoryStorage(),
+    storage: storage,
     limits:{fileSize: 1024*1024},
     fileFilter: fileFilter
 });

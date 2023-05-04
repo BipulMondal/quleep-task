@@ -21,7 +21,7 @@ try {
 
     const {name, description, price, currency, color} = req.body;
 
-    if(!name || !description || !price || !currency || !color || !files ){
+    if(!name || !description || !price || !currency || !color || !images ){
         console.log("All fields are required")
     }
     else{

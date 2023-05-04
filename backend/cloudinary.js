@@ -13,44 +13,66 @@ cloudinary.config({
   });
 
 
+  // exports.clouduploads = async (files, folder) => {
+  //   const uploadResults = [];
+  
+  //   for (const file of files) {
+  //     const uploadResult = await new Promise((resolve) => {
+  //       const uploadStream = cloudinary.uploader.upload_stream(
+  //         {
+  //           resource_type: "auto",
+  //           folder: folder,
+  //         },
+  //         (error, result) => {
+  //           if (error) {
+  //             console.log(error);
+  //             resolve({ error });
+  //           } else {
+  //             resolve({
+  //               url: result.url,
+  //               id: result.public_id,
+  //             });
+  //           }
+  //         }
+  //       );
+  
+  //       const stream = fs.createReadStream(file.path);
+  //       stream.pipe(uploadStream);
+  //     });
+  
+  //     uploadResults.push(uploadResult);
+
+  //     fs.unlink(file.path, (err) => {
+  //       if (err) {
+  //         console.error(err);
+  //       }
+  //     });
+  //   }
+    
+  //   return uploadResults.map(({url, id}) => ({url, id}));
+  // };
+  
+
   exports.clouduploads = async (files, folder) => {
     const uploadResults = [];
   
     for (const file of files) {
-      const uploadResult = await new Promise((resolve) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "auto",
-            folder: folder,
-          },
-          (error, result) => {
-            if (error) {
-              console.log(error);
-              resolve({ error });
-            } else {
-              resolve({
-                url: result.url,
-                id: result.public_id,
-              });
-            }
+      try {
+        const result = await cloudinary.uploader.upload(file.path, {
+          resource_type: 'auto',
+          folder: folder
+        });
+        uploadResults.push({ url: result.url, id: result.public_id });
+        fs.unlink(file.path, (err) => {
+          if (err) {
+            console.error(err);
           }
-        );
-  
-        const stream = fs.createReadStream(file.path);
-        stream.pipe(uploadStream);
-      });
-  
-      uploadResults.push(uploadResult);
-
-      fs.unlink(file.path, (err) => {
-        if (err) {
-          console.error(err);
-        }
-      });
+        });
+      } catch (error) {
+        console.error(error);
+        throw new Error('Upload failed');
+      }
     }
-    
-    return uploadResults.map(({url, id}) => ({url, id}));
-  };
   
-
-
+    return uploadResults;
+  };

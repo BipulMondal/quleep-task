@@ -1,7 +1,7 @@
 const cloudinary = require ("cloudinary").v2;
 
 const dotenv = require("dotenv");
-const fs = require ("fs");
+// const fs = require ("fs");
 dotenv.config();
 
 
@@ -58,16 +58,16 @@ cloudinary.config({
   
     for (const file of files) {
       try {
-        const result = await cloudinary.uploader.upload(file.path, {
+        const result = await cloudinary.uploader.upload(file.buffer, {
           resource_type: 'auto',
           folder: folder
         });
         uploadResults.push({ url: result.url, id: result.public_id });
-        fs.unlink(file.path, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
+        // fs.unlink(file.path, (err) => {
+        //   if (err) {
+        //     console.error(err);
+        //   }
+        // });
       } catch (error) {
         console.error(error);
         throw new Error('Upload failed');
